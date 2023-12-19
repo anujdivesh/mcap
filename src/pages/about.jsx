@@ -3,8 +3,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import L from 'leaflet';
 import "leaflet-side-by-side";
 import "./L.TileLayer.BetterWMS";
+import "./wmsgroundwater";
 import "leaflet-bing-layer";
-import {mayFlyer, addGround, addTVMarker,addWaterpoint,addShorelineImage,addLayer,addLayerprep} from "./helper";
+import {mayFlyer, addGround, addTVMarker,addWaterpoint,addShorelineImage,addLayer,addLayerprep,addLand} from "./helper";
 import { setGlobalState, useGlobalState } from './globalstate';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -33,6 +34,7 @@ const About = () => {
  const nameer = useGlobalState("island_name");
  const [watercheckRef, setWatercheckref] = useState(false);
  const [groundcheck, setGroundcheck] = useState(false);
+ const [landcheck, setLandcheck] = useState(false);
  const [inundationcheck, setInuncationCheck] = useState(false);
  const [imageryCheck, setimageryCheck] = useState(false);
 
@@ -45,6 +47,7 @@ const About = () => {
   const legendRef = useRef(null);
   const legendinundation = useRef(null);
   const legendColorRef = useRef(null);
+  const legendLanduse = useRef(null);
 
   //inundation
   const horizonRef = useRef("2060");
@@ -97,7 +100,7 @@ const algorithm = [
   "Nui",
   "Vaitupu"
 ];
-const language = ["Laura"];
+const language = ["Laura", "Wotje"];
 const dataStructure = ["Peleliu", "Angaur", "Kayangel"];
 
 const changeSelectOptionHandler = (event) => {
@@ -116,10 +119,11 @@ const changeSelectOptionHandler = (event) => {
   setWatercheckref(false);
   setInuncationCheck(false)
   setGroundcheck(false);
+  setLandcheck(false);
   setInundationSite(null)
   mapContainer.current.eachLayer(function (layer) {
     const layername = layer.options.id;
-    if(layername === 2 || layername ===3){
+    if(layername === 2 || layername ===3 || layername ===33){
       mapContainer.current.removeLayer(layer);
     }
   });
@@ -160,6 +164,11 @@ const changeSelectOptionHandler = (event) => {
       layer3.current = addTVMarker(mapContainer.current, "Kayangel").on('click', function(e) {onClickShow3('Kayangel')}).bindTooltip("Kayangel", {permanent:true,opacity:0.65});
       setValue([' --Select-- '])
     }
+    if (event.target.value === 'RMI'){
+      layer3.current = addTVMarker(mapContainer.current, "Laura").on('click', function(e) {onClickShow3('Laura')}).bindTooltip("Laura", {permanent:true,opacity:0.65});
+      layer3.current = addTVMarker(mapContainer.current, "Wotje").on('click', function(e) {onClickShow3('Wotje')}).bindTooltip("Wotje", {permanent:true,opacity:0.65});
+      setValue([' --Select-- '])
+    }
   }
   setGlobalState("island_name", event.target.value);
   regionRef.current =event.target.value;
@@ -173,9 +182,11 @@ const changeSelectOptionHandler = (event) => {
     locationRef.current.unshift(' --Select-- ');
   }
   if(event.target.value === 'RMI'){
-    siteRef.current = 'Laura';
-    setimageryCheck(true)
-    satellite.current = addShorelineImage(mapContainer.current, siteRef.current, "MH", "2019")
+    locationRef.current = language;
+    locationRef.current.unshift(' --Select-- ');
+    //siteRef.current = 'Laura';
+    //setimageryCheck(true)
+    //satellite.current = addShorelineImage(mapContainer.current, siteRef.current, "MH", "2019")
   } 
   else{
     siteRef.current = null;
@@ -222,6 +233,12 @@ const changeSelectOptionHandler = (event) => {
   layer3.current = addTVMarker(mapContainer.current, "Angaur").on('click', function(e) {onClickShow3('Angaur')}).bindTooltip("Angaur", {permanent:true,opacity:0.65});
   layer3.current = addTVMarker(mapContainer.current, "Kayangel").on('click', function(e) {onClickShow3('Kayangel')}).bindTooltip("Kayangel", {permanent:true,opacity:0.65});
 
+ }
+ else if  (nameer[0] === "RMI"){
+  mayFlyer(mapContainer.current, siteRef.current);
+  layer3.current = addTVMarker(mapContainer.current, "Laura").on('click', function(e) {onClickShow3('Laura')}).bindTooltip("Laura", {permanent:true,opacity:0.65});
+    layer3.current = addTVMarker(mapContainer.current, "Wotje").on('click', function(e) {onClickShow3('Wotje')}).bindTooltip("Wotje", {permanent:true,opacity:0.65});
+   
  }
  else{
 
@@ -306,6 +323,9 @@ const onClickShow3= async(siteName) => {
       if(legendinundation.current != null){
         mapContainer.current.removeControl(legendinundation.current);
         }
+        if(legendLanduse.current != null){
+          mapContainer.current.removeControl(legendLanduse.current);
+          }
   setWatercheckref(false);
   setInuncationCheck(false)
   mapContainer.current.eachLayer(function (layer) {
@@ -356,6 +376,9 @@ const onClickShow3= async(siteName) => {
       if(legendinundation.current != null){
         mapContainer.current.removeControl(legendinundation.current);
         }
+        if(legendLanduse.current != null){
+          mapContainer.current.removeControl(legendLanduse.current);
+          }
   regionRef.current = siteName;
   mapContainer.current.eachLayer(function (layer) {
     const layername = layer.options.id;
@@ -370,6 +393,7 @@ const onClickShow3= async(siteName) => {
     locationRef.current.unshift(' --Select-- ');
   } else if (siteName === "RMI") {
     locationRef.current = language;
+    locationRef.current.unshift(' --Select-- ');
   } else if (siteName === "Palau") {
     locationRef.current = dataStructure;
     locationRef.current.unshift(' --Select-- ');
@@ -388,9 +412,12 @@ const onClickShow3= async(siteName) => {
 
   }
   if(siteName === 'RMI'){
-    siteRef.current = 'Laura';
-    setimageryCheck(true)
-    satellite.current = addShorelineImage(mapContainer.current, siteRef.current,"MH","2019")
+    layer3.current = addTVMarker(mapContainer.current, "Laura").on('click', function(e) {onClickShow3('Laura')}).bindTooltip("Laura", {permanent:true,opacity:0.65});
+    layer3.current = addTVMarker(mapContainer.current, "Wotje").on('click', function(e) {onClickShow3('Wotje')}).bindTooltip("Wotje", {permanent:true,opacity:0.65});
+   
+    //siteRef.current = 'Laura';
+    //setimageryCheck(true)
+    //satellite.current = addShorelineImage(mapContainer.current, siteRef.current,"MH","2019")
   } 
   
 
@@ -437,13 +464,17 @@ const handleSite=(e)=>{
       if(legendinundation.current != null){
         mapContainer.current.removeControl(legendinundation.current);
         }
+        if(legendLanduse.current != null){
+          mapContainer.current.removeControl(legendLanduse.current);
+          }
   setWatercheckref(false);
   setGroundcheck(false);
+  setLandcheck(false);
   setInundationSite(null);
   setInuncationCheck(false);
   mapContainer.current.eachLayer(function (layer) {
     const layername = layer.options.id;
-    if(layername === 2 || layername ===3 || layername === 4){
+    if(layername === 2 || layername ===3 || layername === 4 || layername === 33){
       mapContainer.current.removeLayer(layer);
     }
   });
@@ -492,18 +523,18 @@ const handleWater = (e) => {
     legendRef.current.onAdd = function() {
             var div = L.DomUtil.create("div", "legend");
             div.innerHTML += "<h4>Legend</h4>";
-            
-            div.innerHTML += "<img src="+require('../images/new_icons/cistern.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Cistern</span><br>";
-            div.innerHTML += "<img src="+require('../images/new_icons/header_tank.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Header Tank</span><br>";
-            div.innerHTML += "<img src="+require('../images/new_icons/monitoring_well.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Monitoring Well</span><br>";
-            div.innerHTML += "<img src="+require('../images/new_icons/pumping_well.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Pumping well</span><br>";
-            div.innerHTML += "<img src="+require('../images/new_icons/sinkhole.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'>&nbspSinkhole</span><br>";
-            div.innerHTML += "<img src="+require('../images/new_icons/traditional_pool.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Traditional Pool</span><br>";
-            div.innerHTML += "<img src="+require('../images/new_icons/treatment_plant.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Treatment Plant</span><br>";
-            div.innerHTML += "<img src="+require('../images/new_icons/water_tank.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Water Tank</span><br>";
-            div.innerHTML += "<img src="+require('../images/new_icons/well_communal.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Well Communal</span><br>";
-            div.innerHTML += "<img src="+require('../images/new_icons/well_private.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Well Private</span><br>";
-            
+
+div.innerHTML += "<img src="+require('../images/iconx/cistern.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Cistern communal</span><br>";
+div.innerHTML += "<img src="+require('../images/iconx/header_tank.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Header tank</span><br>";
+div.innerHTML += "<img src="+require('../images/iconx/monitoring_well.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Monitoring well</span><br>";
+div.innerHTML += "<img src="+require('../images/iconx/pumping_well.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Pumping well</span><br>";
+div.innerHTML += "<img src="+require('../images/iconx/sinkhole.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'>&nbspSinkhole</span><br>";
+div.innerHTML += "<img src="+require('../images/iconx/traditional_pool.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Traditional pool</span><br>";
+div.innerHTML += "<img src="+require('../images/iconx/treatment_plant.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Treatment plant</span><br>";
+div.innerHTML += "<img src="+require('../images/iconx/water_tank.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Rain tank communal</span><br>";
+div.innerHTML += "<img src="+require('../images/iconx/well_communal.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Shallow well private</span><br>";
+div.innerHTML += "<img src="+require('../images/iconx/well_private.png')+" style='width:20px; height:20px;'></i><span style='font-size:14px;'> Shallow well communal</span><br>";
+
            return div;
           };
           legendRef.current.addTo(mapContainer.current);
@@ -537,15 +568,9 @@ const handleGround = (e) => {
     legendColorRef.current = L.control({ position: "topright", id:12 });
     legendColorRef.current.onAdd = function() {
             var div = L.DomUtil.create("div", "legend");
-            div.innerHTML += "<h4>Legend(m)</h4>";
-            div.innerHTML += '<i style="background: #c0392b"></i><span>17.0</span><br>';
-            div.innerHTML += '<i style="background: #e74c3c"></i><span>14.5</span><br>';
-            div.innerHTML += '<i style="background: #f1948a"></i><span>12.0</span><br>';
-            div.innerHTML += '<i style="background: #fadbd8"></i><span>9.5</span><br>';
-            div.innerHTML += '<i style="background: #0096FF"></i><span>7.0</span><br>';
-            div.innerHTML += '<i style="background:  #00008B"></i><span>5.0</span><br>';
-            div.innerHTML += '<i style="background: #A18B7E"></i><span>4.5</span><br>';
-            div.innerHTML += '<i style="background: #FFFF00"></i><span>4.0</span><br>';
+            
+            div.innerHTML += "<h4>Legend</h4>";
+            div.innerHTML += '<img src="'+require('./legend_GW.png')+'" alt="Legend">';
             
            return div;
           };
@@ -569,6 +594,37 @@ const handleGround = (e) => {
 
 const handleLand = (e) => { 
   const { value, checked } = e.target;
+  if (siteRef.current == null || siteRef.current ==="Tuvalu" || siteRef.current ==="Pacific"){
+    setLandcheck(false)
+    toast.warning('Select Site to enable this dataset.', {position: toast.POSITION.BOTTOM_CENTER, autoClose:4000})
+   }
+   else{
+    setLandcheck(!landcheck);
+    const { value, checked } = e.target;
+    if (checked === true){
+      legendLanduse.current = L.control({ position: "topright", id:12 });
+      legendLanduse.current.onAdd = function() {
+        var div = L.DomUtil.create("div", "legend");
+        div.innerHTML += "<h4>Legend</h4>";
+        div.innerHTML += '<img src="'+require('./legend_LU.png')+'" alt="Legend">';
+              
+             return div;
+            };
+            legendLanduse.current.addTo(mapContainer.current);
+      layer.current = addLand(mapContainer.current, siteRef.current)
+    }
+    else{
+      if(legendLanduse.current != null){
+        mapContainer.current.removeControl(legendLanduse.current);
+        }
+      mapContainer.current.eachLayer(function (layer) {
+        const layername = layer.options.id;
+        if(layername === 33){
+          mapContainer.current.removeLayer(layer);
+        }
+      });
+    }
+   }
   e.currentTarget.blur()
 }; 
 
@@ -622,6 +678,12 @@ const handleImagery = (e) => {
 
   if (checked === true){
     if(regionRef.current ==='Palau'){
+      setInundationSite(null);
+      setInuncationCheck(false);
+
+      toast.warning('Inundation data unavailble for the site.', {position: toast.POSITION.BOTTOM_CENTER, autoClose:4000})
+    }
+    else if(siteRef.current ==='Wotje'){
       setInundationSite(null);
       setInuncationCheck(false);
 
@@ -901,7 +963,7 @@ e.currentTarget.blur();
         type="switch"
         id="custom-switch"
         onChange={handleLand}
-        checked={false}
+        checked={landcheck}
       />
       </div>
       </div>

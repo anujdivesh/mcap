@@ -70,9 +70,6 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
       el.innerHTML =content
       var p = el.getElementsByTagName( 'td' );
 
-      console.log(p[1].textContent)
-      console.log(p[2].textContent)
-      console.log(p[3].textContent)
 
       var value = "";
       try {
@@ -88,8 +85,9 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
       }
       catch(err) {
         value = " Undefined"
-      }var color = 'Land use information:';
-      var content = "<div style='width: 210px; height: 80px; padding:0px'><p style='font-weight: bold;'></p><p style='color:#1b6387;'><span style='font-weight: bold; background-color:#1b6387; color:#FFFFFF;'>&nbsp;&nbsp;"+color+"&nbsp;&nbsp;</span> <br/> Island: "+p[3].textContent+"<br/>Class: "+p[1].textContent+"<br/>Area: "+p[2].textContent+"</p></div>"
+      }
+      var color = 'Ground water information:';
+    var content = "<div style='width: 240px; height: 70px; padding:0px'><p style='font-weight: bold;'></p><p style='color:#1b6387;'><span style='font-weight: bold; background-color:#1b6387; color:#FFFFFF;'>&nbsp;&nbsp;"+color+"&nbsp;&nbsp;</span> <br/> Island: "+p[1].textContent+"<br/>Estimated freshwater thickness (m): "+p[2].textContent+"</p></div>"
 
       // Otherwise show the content in a popup, or something.
       L.popup({ maxWidth: 800})
@@ -99,6 +97,6 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
     }
   });
   
-  L.tileLayer.betterWms = function (url, options) {
+  L.tileLayer.betterWmswater = function (url, options) {
     return new L.TileLayer.BetterWMS(url, options);  
   };

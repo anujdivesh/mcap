@@ -14,6 +14,129 @@ const cgiAddress = "https://opm.gem.spc.int/";
 //const cgiAddress = "http://192.168.4.92/";
 
 
+var sld = `<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:se="http://www.opengis.net/se" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:ogc="http://www.opengis.net/ogc" version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NamedLayer>
+    <se:Name>LU_combined</se:Name>
+    <UserStyle>
+      <se:Name>LU_combined</se:Name>
+      <se:FeatureTypeStyle>
+        <se:Rule>
+          <se:Name>Building</se:Name>
+          <se:Description>
+            <se:Title>Building</se:Title>
+          </se:Description>
+          <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>Class</ogc:PropertyName>
+              <ogc:Literal>Building</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <se:PolygonSymbolizer>
+            <se:Fill>
+              <se:SvgParameter name="fill">#e369e5</se:SvgParameter>
+            </se:Fill>
+            <se:Stroke>
+              <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+              <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+              <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+            </se:Stroke>
+          </se:PolygonSymbolizer>
+        </se:Rule>
+        <se:Rule>
+          <se:Name>Sand/gravel</se:Name>
+          <se:Description>
+            <se:Title>Sand/gravel</se:Title>
+          </se:Description>
+          <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>Class</ogc:PropertyName>
+              <ogc:Literal>Sand/gravel</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <se:PolygonSymbolizer>
+            <se:Fill>
+              <se:SvgParameter name="fill">#fdbf6f</se:SvgParameter>
+            </se:Fill>
+            <se:Stroke>
+              <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+              <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+              <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+            </se:Stroke>
+          </se:PolygonSymbolizer>
+        </se:Rule>
+        <se:Rule>
+          <se:Name>Taro</se:Name>
+          <se:Description>
+            <se:Title>Taro</se:Title>
+          </se:Description>
+          <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>Class</ogc:PropertyName>
+              <ogc:Literal>Taro</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <se:PolygonSymbolizer>
+            <se:Fill>
+              <se:SvgParameter name="fill">#e31a1c</se:SvgParameter>
+            </se:Fill>
+            <se:Stroke>
+              <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+              <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+              <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+            </se:Stroke>
+          </se:PolygonSymbolizer>
+        </se:Rule>
+        <se:Rule>
+          <se:Name>Veg hi density</se:Name>
+          <se:Description>
+            <se:Title>Veg hi density</se:Title>
+          </se:Description>
+          <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>Class</ogc:PropertyName>
+              <ogc:Literal>Veg hi density</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <se:PolygonSymbolizer>
+            <se:Fill>
+              <se:SvgParameter name="fill">#33a02c</se:SvgParameter>
+            </se:Fill>
+            <se:Stroke>
+              <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+              <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+              <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+            </se:Stroke>
+          </se:PolygonSymbolizer>
+        </se:Rule>
+        <se:Rule>
+          <se:Name>Veg lo density</se:Name>
+          <se:Description>
+            <se:Title>Veg lo density</se:Title>
+          </se:Description>
+          <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>Class</ogc:PropertyName>
+              <ogc:Literal>Veg lo density</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <se:PolygonSymbolizer>
+            <se:Fill>
+              <se:SvgParameter name="fill">#b2df8a</se:SvgParameter>
+            </se:Fill>
+            <se:Stroke>
+              <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+              <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+              <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+            </se:Stroke>
+          </se:PolygonSymbolizer>
+        </se:Rule>
+      </se:FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>
+  `;
+
 export function addTVMarker(map, site) {
   
   const redIcon = new L.Icon({
@@ -34,6 +157,9 @@ export function addTVMarker(map, site) {
       if (site === "RMI"){
         latlng = [7.146918, 171.034545];
         }
+        if (site === "Laura"){
+          latlng = [7.146918, 171.034545];
+          }
       if (site === "Palau"){
         latlng = [7.388727, 134.470231];
       }
@@ -55,6 +181,9 @@ export function addTVMarker(map, site) {
                 if (site === "Angaur"){
                   latlng = [6.909704, 134.138282];
                   }
+                  if (site === "Wotje"){
+                    latlng = [9.455170, 170.239640];
+                    }
                   if (site === "Kayangel"){
                     latlng = [8.065986, 134.711673];
                     }
@@ -74,8 +203,14 @@ map.eachLayer(function (lyr) {
         if (site === "Palau"){
           map.flyTo([7.388727, 134.470231], 8);
           }
-          if (site === "RMI"){
+          if (site === "Laura"){
             map.flyTo([7.148520, 171.034049], 15);
+            }
+            if (site === "Wotje"){
+              map.flyTo([9.455170, 170.239640], 15);
+              }
+          if (site === "RMI"){
+            map.flyTo([7.148520, 171.034049], 7);
             }
             if (site === "Pacific"){
               map.flyTo([0.878032, 155.843298], 5);
@@ -155,23 +290,87 @@ export function addLayernoMap(mapContainer, url, siteRef, yearRef,horizonRef,cli
     return layer;
 }
 
-export async function addGround(mapContainer, siteRef){
-  if (siteRef === 'Peleliu' || siteRef === 'Angaur' || siteRef === 'Kayangel'){
-    siteRef = 'Palau';
-  }
+export async function addLand(mapContainer, siteRef){
+//load wms form geoserver
 
-    const resp = await fetch(geoserverAddress+"geoserver/spc/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=spc:MCAP_Combined_Groundwater&outputFormat=application/json&srsName=epsg:4326&cql_filter=island='"+siteRef+"'");
+const layer = L.tileLayer.betterWms("https://opmgeoserver.gem.spc.int/geoserver/spc/wms", {
+    layers: 'spc:MCAP_LU_combined',
+    id:33,
+    format: 'image/png',
+    styles:'spc:mcap_landuse',
+    transparent: true,
+    version: '1.1.0',
+    attribution: "country layer2"
+});
+layer.addTo(mapContainer);
+  /*
+var SLDStyler = new L.SLDStyler(sld);
+    const resp = await fetch(geoserverAddress+"geoserver/spc/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=spc:MCAP_LU_combined&outputFormat=application/json&srsName=epsg:4326&cql_filter=Island='"+siteRef+"'");
     const customData = await resp.json();
 var layer = L.geoJson(customData, {
-  id:3,
+  id:4,
   onEachFeature: function (f, l) {
     var color = 'Ground water information:';
-    var content = "<div style='width: 210px; height: 90px; padding:0px'><p style='font-weight: bold;'></p><p style='color:#1b6387;'><span style='font-weight: bold; background-color:#1b6387; color:#FFFFFF;'>&nbsp;&nbsp;"+color+"&nbsp;&nbsp;</span> <br/> Island: "+f.properties.island+"<br/>Estimated freshwater thickness (m): "+f.properties.thickness+"</p></div>"
+    var content = "<div style='width: 210px; height: 90px; padding:0px'><p style='font-weight: bold;'></p><p style='color:#1b6387;'><span style='font-weight: bold; background-color:#1b6387; color:#FFFFFF;'>&nbsp;&nbsp;"+color+"&nbsp;&nbsp;</span> <br/> Island: "+f.properties.Island+"<br/>Estimated freshwater thickness (m): "+f.properties.Area+"</p></div>"
 
   l.bindPopup(content, {
     maxWidth: "auto"
 });
   },
+  style: sld,
+}).addTo(mapContainer);*/
+  return layer;
+}
+
+export async function addGround(mapContainer, siteRef){
+  //load wms form geoserver
+  
+  const layer = L.tileLayer.betterWmswater("https://opmgeoserver.gem.spc.int/geoserver/spc/wms", {
+      layers: 'spc:MCAP_Combined_Groundwater',
+      id:3,
+      format: 'image/png',
+      styles:'spc:MCAP_groundwater_sld',
+      transparent: true,
+      version: '1.1.0',
+      attribution: "country layer2"
+  });
+  layer.addTo(mapContainer);
+    /*
+  var SLDStyler = new L.SLDStyler(sld);
+      const resp = await fetch(geoserverAddress+"geoserver/spc/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=spc:MCAP_LU_combined&outputFormat=application/json&srsName=epsg:4326&cql_filter=Island='"+siteRef+"'");
+      const customData = await resp.json();
+  var layer = L.geoJson(customData, {
+    id:4,
+    onEachFeature: function (f, l) {
+      var color = 'Ground water information:';
+      var content = "<div style='width: 210px; height: 90px; padding:0px'><p style='font-weight: bold;'></p><p style='color:#1b6387;'><span style='font-weight: bold; background-color:#1b6387; color:#FFFFFF;'>&nbsp;&nbsp;"+color+"&nbsp;&nbsp;</span> <br/> Island: "+f.properties.Island+"<br/>Estimated freshwater thickness (m): "+f.properties.Area+"</p></div>"
+  
+    l.bindPopup(content, {
+      maxWidth: "auto"
+  });
+    },
+    style: sld,
+  }).addTo(mapContainer);*/
+    return layer;
+  }
+
+export async function addGround_old(mapContainer, siteRef){
+  if (siteRef === 'Peleliu' || siteRef === 'Angaur' || siteRef === 'Kayangel'){
+    siteRef = 'Palau';
+  }
+
+    const resp = await fetch(geoserverAddress+"geoserver/spc/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=spc:MCAP_Combined_Groundwater&outputFormat=application/json&srsName=epsg:4326&cql_filter=layer='"+siteRef+"'");
+    const customData = await resp.json();
+var layer = L.geoJson(customData, {
+  id:3,
+  onEachFeature: function (f, l) {
+    var color = 'Ground water information:';
+    var content = "<div style='width: 210px; height: 90px; padding:0px'><p style='font-weight: bold;'></p><p style='color:#1b6387;'><span style='font-weight: bold; background-color:#1b6387; color:#FFFFFF;'>&nbsp;&nbsp;"+color+"&nbsp;&nbsp;</span> <br/> Island: "+f.properties.layer+"<br/>Estimated freshwater thickness (m): "+f.properties.thickness+"</p></div>"
+
+  l.bindPopup(content, {
+    maxWidth: "auto"
+});
+  }/*,
   style: function (feature) {
     var color;
 
@@ -215,53 +414,54 @@ var layer = L.geoJson(customData, {
       opacity: 0.9,
       fillOpacity: 0.3,
       };
-}
+}*/
 }).addTo(mapContainer);
   return layer;
 }
 
 export async function addWaterpoint(mapContainer, siteRef){
   var well_private = L.icon({
-    iconUrl: require('../images/new_icons/well_private.png'),
+    iconUrl: require('../images/iconx/well_private.png'),
     iconSize:     [20, 20], // size of the icon
 });
 var well_communal = L.icon({
-  iconUrl: require('../images/new_icons/well_communal.png'),
+  iconUrl: require('../images/iconx/well_communal.png'),
   iconSize:     [20, 20], // size of the icon
 });
 var water_tank = L.icon({
-  iconUrl: require('../images/new_icons/water_tank.png'),
+  iconUrl: require('../images/iconx/water_tank.png'),
   iconSize:     [20, 20], // size of the icon
 });
 var treatment_plant = L.icon({
-  iconUrl: require('../images/new_icons/treatment_plant.png'),
+  iconUrl: require('../images/iconx/treatment_plant.png'),
   iconSize:     [20, 20], // size of the icon
 });
 var treatment_pool = L.icon({
-  iconUrl: require('../images/new_icons/traditional_pool.png'),
+  iconUrl: require('../images/iconx/traditional_pool.png'),
   iconSize:     [20, 20], // size of the icon
 });
 var sinkhole = L.icon({
-  iconUrl: require('../images/new_icons/sinkhole.png'),
+  iconUrl: require('../images/iconx/sinkhole.png'),
   iconSize:     [20, 20], // size of the icon
 });
 var pumping_well = L.icon({
-  iconUrl: require('../images/new_icons/pumping_well.png'),
+  iconUrl: require('../images/iconx/pumping_well.png'),
   iconSize:     [20, 20], // size of the icon
 });
 var monitoring_well = L.icon({
-  iconUrl: require('../images/new_icons/monitoring_well.png'),
+  iconUrl: require('../images/iconx/monitoring_well.png'),
   iconSize:     [20, 20], // size of the icon
 });
 var header_tank = L.icon({
-  iconUrl: require('../images/new_icons/header_tank.png'),
+  iconUrl: require('../images/iconx/header_tank.png'),
   iconSize:     [20, 20], // size of the icon
 });
 var cistern = L.icon({
-  iconUrl: require('../images/new_icons/cistern.png'),
+  iconUrl: require('../images/iconx/cistern.png'),
   iconSize:     [20, 20], // size of the icon
 });
     const resp = await fetch(geoserverAddress+"geoserver/spc/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=spc:MCAP_Combined_Infrastructure&outputFormat=application/json&srsName=epsg:4326&cql_filter=island='"+siteRef+"'");
+    console.log(geoserverAddress+"geoserver/spc/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=spc:MCAP_Combined_Infrastructure&outputFormat=application/json&srsName=epsg:4326&cql_filter=island='"+siteRef+"'")
     const customData = await resp.json();
 var layer = L.geoJson(customData, {
   id:2,
@@ -269,7 +469,7 @@ var layer = L.geoJson(customData, {
     var asset = feature.properties.Asset_Type;
     var assetStr = String(asset);
     console.log(asset)
-    if(assetStr.includes('Well (private)')){
+    if(assetStr.includes('Shallow Well (private)')){
     return L.marker(latlng, {icon: well_private});
     }
     else if(assetStr.includes('Treatment plant')){
@@ -290,7 +490,7 @@ var layer = L.geoJson(customData, {
             else if(assetStr.includes('Pumping well')){
               return L.marker(latlng, {icon: pumping_well});
               }
-              else if(assetStr.includes('Well (communal)')){
+              else if(assetStr.includes('Shallow Well (communal)')){
                 return L.marker(latlng, {icon: well_communal});
                 }
                 else if(assetStr.includes('Rain tank (communal)')){
@@ -305,7 +505,7 @@ var layer = L.geoJson(customData, {
   },
   onEachFeature: function (f, l) {
     var color = 'Water source information:';
-    var content = "<div style='width: 250px; height: 90px; padding:0px'><p style='font-weight: bold;'></p><p style='color:#1b6387;'><span style='font-weight: bold; background-color:#1b6387; color:#FFFFFF;'>&nbsp;&nbsp;"+color+"&nbsp;&nbsp;</span> <br/> Island: "+f.properties.island+"<br/>Water source type: "+f.properties.Asset_Type+"<br/>Water source name: "+f.properties.Asset_dtl+"<br/>EC (mS/cm): "+f.properties['EC (mS/cm)']+"</p></div>"
+    var content = "<div style='width: 250px; height: 90px; padding:0px'><p style='font-weight: bold;'></p><p style='color:#1b6387;'><span style='font-weight: bold; background-color:#1b6387; color:#FFFFFF;'>&nbsp;&nbsp;"+color+"&nbsp;&nbsp;</span> <br/> Island: "+f.properties.island+"<br/>Water source type: "+f.properties.Asset_Type+"<br/>Water source name: "+f.properties.Asset_dtl+"<br/>EC (mS/cm): "+f.properties['EC mS/cm']+"</p></div>"
    
     //console.log(f.properties)
   l.bindPopup(content, {
